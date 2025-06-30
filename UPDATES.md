@@ -106,7 +106,30 @@ npm run upgrade      # Atualizar dependências
 
 ## 🆕 Últimas Melhorias:
 
-### **Layout Optimization (Recente)**
+### **Otimização do Calendário com Modal (RECENTE)**
+
+- ✅ **Interface limpa** - Indicadores visuais em vez de detalhes completos
+- ✅ **Modal de vistorias** - Visualização detalhada sob demanda
+- ✅ **Performance melhorada** - Menos elementos DOM por dia
+- ✅ **UX otimizada** - Foco nas informações importantes
+- ✅ **Responsividade** - Experiência consistente mobile/desktop
+- ✅ **Design intuitivo** - Botões "Ver" e indicadores coloridos
+- ✅ **Sem duplicação** - Filtro rigoroso elimina componentes duplicados
+- ✅ **Exibição única** - Informações detalhadas apenas no modal
+- ✅ **Fonte única de dados** - Vistorias apenas dos processos
+- ✅ **Filtros em camadas** - Múltiplos níveis de filtragem para garantia
+
+**Funcionalidades:**
+- Indicadores por tipo: Vistorias (azul) vs Outros eventos (cinza)
+- Modal detalhado com informações completas das vistorias
+- Cards individuais para cada vistoria do dia
+- Informações: Inquilino, horário, endereço, status, garantia
+- Layout responsivo com scroll automático
+- Filtro triplo: tipo, processo e nome para evitar duplicações
+- Filtros Supabase: Exclusão de eventos relacionados a vistorias
+- Regex patterns: Detecção automática de padrões de vistoria
+
+### **Layout Optimization (Anterior)**
 
 - ✅ **Espaçamento otimizado** entre calendário e Kanban
 - ✅ **Separador visual** elegante entre seções

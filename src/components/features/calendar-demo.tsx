@@ -71,8 +71,8 @@ function convertProcessosToCalendarEvents(processos: ProcessoDesocupacao[]): Cal
     const dataVistoria = normalizeDate(processo.contrato.dataVistoria)
     const dateKey = format(dataVistoria, 'yyyy-MM-dd')
 
-    // Nome simplificado - apenas o nome do inquilino
-    const nomeEvento = processo.contrato.nomeInquilino
+    // Nome descritivo para o modal (não será exibido no calendário)
+    const nomeEvento = `Vistoria - ${processo.contrato.nomeInquilino}`
 
     const evento: CalendarEvent = {
       id: parseInt(processo.id.replace(/[^\d]/g, '')) || Date.now() + Math.random(),
@@ -110,6 +110,18 @@ function CalendarDemo({ processos = [] }: CalendarDemoProps) {
 
         eventosData.forEach((evento) => {
           if (!evento.data_evento) return // Skip eventos sem data
+
+          // Filtrar eventos que podem ser relacionados a vistorias
+          const titulo = (evento.evento_titulo || '').toLowerCase()
+          const isVistoriaRelated =
+            titulo.includes('vistoria') ||
+            titulo.includes('contrato') ||
+            titulo.includes('desocupa') ||
+            titulo.includes('inquilino') ||
+            /\d{2}:\d{2}/.test(titulo) // Padrão de horário
+
+          if (isVistoriaRelated) return // Pular eventos relacionados a vistorias
+
           const dataEvento = normalizeDate(new Date(evento.data_evento))
           const dateKey = format(dataEvento, 'yyyy-MM-dd')
 
@@ -154,17 +166,31 @@ function CalendarDemo({ processos = [] }: CalendarDemoProps) {
     return convertProcessosToCalendarEvents(processos)
   }, [processos])
 
-  // Mesclar eventos do Supabase com eventos de vistorias
+  // Mesclar eventos do Supabase com eventos de vistorias (apenas eventos não relacionados a vistorias)
   const mergedEvents = useMemo(() => {
     const eventsMap = new Map<string, CalendarEvent[]>()
 
-    // Adicionar eventos do Supabase
+    // Adicionar apenas eventos do Supabase que NÃO são relacionados a vistorias
     supabaseEvents.forEach(({ day, events }) => {
       const dateKey = format(normalizeDate(day), 'yyyy-MM-dd')
-      eventsMap.set(dateKey, [...events])
+      // Filtro extra para garantir que nenhum evento relacionado a vistoria passe
+      const eventosLimpos = events.filter((event) => {
+        const nome = event.name.toLowerCase()
+        return (
+          !nome.includes('vistoria') &&
+          !nome.includes('contrato') &&
+          !nome.includes('desocupa') &&
+          !nome.includes('inquilino') &&
+          !event.processo &&
+          event.tipo !== 'vistoria'
+        )
+      })
+      if (eventosLimpos.length > 0) {
+        eventsMap.set(dateKey, [...eventosLimpos])
+      }
     })
 
-    // Adicionar eventos de vistorias
+    // Adicionar eventos de vistorias dos processos
     vistoriaEvents.forEach(({ day, events }) => {
       const dateKey = format(normalizeDate(day), 'yyyy-MM-dd')
       const existingEvents = eventsMap.get(dateKey) || []

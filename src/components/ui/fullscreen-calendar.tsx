@@ -1,5 +1,14 @@
 'use client'
 
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
   add,
   eachDayOfInterval,
@@ -16,7 +25,15 @@ import {
   startOfWeek,
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { ChevronLeftIcon, ChevronRightIcon, SearchIcon } from 'lucide-react'
+import {
+  Calendar,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  Clock,
+  MapPin,
+  SearchIcon,
+  User,
+} from 'lucide-react'
 import * as React from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -62,6 +79,129 @@ interface FullScreenCalendarProps {
   data: CalendarData[]
 }
 
+// Componente Modal para Vistorias do Dia
+interface VistoriasModalProps {
+  isOpen: boolean
+  onClose: () => void
+  date: Date
+  vistorias: Event[]
+}
+
+const VistoriasModal: React.FC<VistoriasModalProps> = ({ isOpen, onClose, date, vistorias }) => {
+  const vistoriasDoTipo = vistorias.filter((event) => event.tipo === 'vistoria')
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Vistorias de {format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+          </DialogTitle>
+          <DialogDescription>
+            {vistoriasDoTipo.length} vistoria{vistoriasDoTipo.length !== 1 ? 's' : ''} agendada
+            {vistoriasDoTipo.length !== 1 ? 's' : ''} para este dia
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4 py-4">
+          {vistoriasDoTipo.map((vistoria, index) => (
+            <Card key={`${vistoria.id}-${index}`} className="hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-end">
+                  <Badge variant="outline" className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {vistoria.time}
+                  </Badge>
+                </div>
+              </CardHeader>
+
+              <CardContent className="pt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Informações do Processo */}
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium text-muted-foreground">
+                      Detalhes do Processo
+                    </h4>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Inquilino:</span>
+                        <span className="font-semibold">
+                          {vistoria.processo?.contrato.nomeInquilino}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-3 w-3" />
+                        <span className="font-medium">Endereço:</span>
+                        <span className="truncate">{vistoria.processo?.contrato.endereco}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Nome do Processo:</span>
+                        <span className="font-semibold">{vistoria.processo?.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">ID do Processo:</span>
+                        <span>{vistoria.processo?.id}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Status:</span>
+                        <div className="flex items-center gap-1">
+                          <div
+                            className="h-2 w-2 rounded-full"
+                            style={{ backgroundColor: vistoria.processo?.status.color }}
+                          />
+                          <span>{vistoria.processo?.status.name}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Garantia:</span>
+                        <span>{vistoria.processo?.contrato.garantia}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Prazo Final:</span>
+                        <span>
+                          {vistoria.processo?.contrato.dataFinalDesocupacao
+                            ? format(vistoria.processo.contrato.dataFinalDesocupacao, 'dd/MM/yyyy')
+                            : 'Não informado'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Responsável */}
+                  {vistoria.processo?.responsavel && (
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-muted-foreground">Responsável</h4>
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
+                          <User className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">
+                            {vistoria.processo.responsavel.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground">Responsável pela vistoria</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+
+          {vistoriasDoTipo.length === 0 && (
+            <div className="text-center py-8 text-muted-foreground">
+              <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>Nenhuma vistoria encontrada para este dia.</p>
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 const colStartClasses = [
   '',
   'col-start-2',
@@ -81,6 +221,9 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
   const [currentMonth, setCurrentMonth] = React.useState(
     format(today, 'MMM-yyyy', { locale: ptBR })
   )
+  const [modalOpen, setModalOpen] = React.useState(false)
+  const [selectedDayEvents, setSelectedDayEvents] = React.useState<Event[]>([])
+
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
   // Ajustar para começar semana na segunda-feira (padrão brasileiro)
@@ -101,6 +244,21 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
 
   function goToToday() {
     setCurrentMonth(format(today, 'MMM-yyyy', { locale: ptBR }))
+  }
+
+  // Função para abrir modal com vistorias do dia
+  const handleDayClick = (day: Date) => {
+    setSelectedDay(day)
+    const dayEvents = data
+      .filter((eventData) => isSameDay(eventData.day, day))
+      .flatMap((eventData) => eventData.events)
+
+    const vistoriasCount = dayEvents.filter((event) => event.tipo === 'vistoria').length
+
+    if (vistoriasCount > 0) {
+      setSelectedDayEvents(dayEvents)
+      setModalOpen(true)
+    }
   }
 
   return (
@@ -191,7 +349,7 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
               {days.map((day, dayIdx) => (
                 <div
                   key={dayIdx}
-                  onClick={() => setSelectedDay(day)}
+                  onClick={() => handleDayClick(day)}
                   className={cn(
                     dayIdx === 0 && colStartClasses[getDay(day) === 0 ? 6 : getDay(day) - 1], // Ajuste para segunda-feira
                     !isEqual(day, selectedDay) &&
@@ -226,91 +384,82 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
                   <div className="flex-1 p-3 pt-0">
                     {data
                       .filter((eventData) => isSameDay(eventData.day, day))
-                      .map((eventData, eventDataIdx) => (
-                        <div
-                          key={`${eventData.day.toString()}-${eventDataIdx}`}
-                          className="space-y-2"
-                        >
-                          {eventData.events.slice(0, 3).map((event, eventIdx) => {
-                            return (
-                              <div
-                                key={`${event.id}-${eventIdx}`}
-                                className={cn(
-                                  'flex flex-col items-start gap-2 rounded-lg border p-2 md:p-3 text-sm leading-tight shadow-sm hover:shadow-md transition-all cursor-pointer group',
-                                  'bg-card hover:bg-muted/50 border-border'
-                                )}
-                                title={
-                                  event.tipo === 'vistoria' && event.processo
-                                    ? `Vistoria: ${event.processo.contrato.nomeInquilino}\nEndereço: ${event.processo.contrato.endereco}\nStatus: ${event.processo.status.name}\nResponsável: ${event.processo.responsavel?.name || 'Não atribuído'}`
-                                    : event.name
-                                }
+                      .map((eventData, eventDataIdx) => {
+                        const vistoriasCount = eventData.events.filter(
+                          (event) => event.tipo === 'vistoria'
+                        ).length
+                        const outrosEventosCount = eventData.events.filter(
+                          (event) =>
+                            event.tipo !== 'vistoria' &&
+                            !event.processo &&
+                            !event.name.toLowerCase().includes('vistoria')
+                        ).length
+
+                        return (
+                          <div
+                            key={`${eventData.day.toString()}-${eventDataIdx}`}
+                            className="space-y-2"
+                          >
+                            {/* Indicador de Vistorias */}
+                            {vistoriasCount > 0 && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full justify-between p-2 h-auto text-xs"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleDayClick(day)
+                                }}
                               >
-                                {/* Nome do evento */}
-                                <div className="flex items-center justify-between w-full">
-                                  <p className="font-semibold leading-none text-xs md:text-sm truncate flex-1">
+                                <div className="flex items-center gap-2">
+                                  <Calendar className="h-3 w-3" />
+                                  <span>
+                                    {vistoriasCount} Vistoria{vistoriasCount !== 1 ? 's' : ''}
+                                  </span>
+                                </div>
+                                <Badge variant="secondary" className="text-xs px-1">
+                                  Ver
+                                </Badge>
+                              </Button>
+                            )}
+
+                            {/* Outros eventos (não vistorias) - exibição limitada */}
+                            {eventData.events
+                              .filter(
+                                (event) =>
+                                  event.tipo !== 'vistoria' &&
+                                  !event.processo &&
+                                  !event.name.toLowerCase().includes('vistoria')
+                              )
+                              .slice(0, 2)
+                              .map((event, eventIdx) => (
+                                <div
+                                  key={`${event.id}-${eventIdx}`}
+                                  className={cn(
+                                    'flex flex-col items-start gap-1 rounded-lg border p-2 text-xs leading-tight shadow-sm hover:shadow-md transition-all cursor-pointer group',
+                                    'bg-card hover:bg-muted/50 border-border'
+                                  )}
+                                  title={event.name}
+                                >
+                                  <p className="font-semibold leading-none truncate w-full">
                                     {event.name}
                                   </p>
-                                </div>
-
-                                {/* Informações da vistoria */}
-                                {event.tipo === 'vistoria' && event.processo && (
-                                  <div className="w-full space-y-1">
-                                    {/* Endereço */}
-                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                      <span>📍</span>
-                                      <span className="truncate">
-                                        {event.processo.contrato.endereco}
-                                      </span>
-                                    </div>
-
-                                    {/* Data e horário da vistoria */}
-                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                      <span>📅</span>
-                                      <span>
-                                        {format(event.processo.contrato.dataVistoria, 'dd/MM/yyyy')}{' '}
-                                        às {event.time}
-                                      </span>
-                                    </div>
-
-                                    {/* Status */}
-                                    <div className="flex items-center gap-1 text-xs">
-                                      <div
-                                        className="h-2 w-2 rounded-full"
-                                        style={{ backgroundColor: event.processo.status.color }}
-                                      />
-                                      <span className="text-muted-foreground">
-                                        {event.processo.status.name}
-                                      </span>
-                                    </div>
-                                  </div>
-                                )}
-
-                                {/* Eventos normais (não vistoria) */}
-                                {event.tipo !== 'vistoria' && (
-                                  <p className="leading-none text-muted-foreground text-xs font-medium">
+                                  <p className="leading-none text-muted-foreground font-medium">
                                     {event.time}
                                   </p>
-                                )}
+                                </div>
+                              ))}
 
-                                {/* Badge para vistoria */}
-                                {event.tipo === 'vistoria' && (
-                                  <div className="flex items-center justify-between w-full mt-1">
-                                    <span className="inline-flex items-center rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground border">
-                                      Vistoria
-                                    </span>
-                                  </div>
-                                )}
+                            {/* Indicador de eventos adicionais */}
+                            {outrosEventosCount > 2 && (
+                              <div className="text-xs text-muted-foreground font-medium bg-muted/30 rounded px-2 py-1 text-center">
+                                + {outrosEventosCount - 2} evento
+                                {outrosEventosCount - 2 !== 1 ? 's' : ''}
                               </div>
-                            )
-                          })}
-                          {eventData.events.length > 3 && (
-                            <div className="text-xs text-muted-foreground font-medium bg-muted/30 rounded px-2 py-1 text-center">
-                              + {eventData.events.length - 3} evento
-                              {eventData.events.length - 3 !== 1 ? 's' : ''}
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                            )}
+                          </div>
+                        )
+                      })}
                   </div>
                 </div>
               ))}
@@ -320,7 +469,7 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
             <div className="isolate grid w-full grid-cols-7 auto-rows-fr lg:hidden min-h-[500px]">
               {days.map((day, dayIdx) => (
                 <button
-                  onClick={() => setSelectedDay(day)}
+                  onClick={() => handleDayClick(day)}
                   key={dayIdx}
                   type="button"
                   className={cn(
@@ -355,29 +504,57 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
                     <div>
                       {data
                         .filter((date) => isSameDay(date.day, day))
-                        .map((date, dateIdx) => (
-                          <div
-                            key={`${date.day.toString()}-mobile-${dateIdx}`}
-                            className="-mx-0.5 mt-auto flex flex-wrap-reverse"
-                          >
-                            {date.events.map((event, eventIdx) => {
-                              return (
-                                <span
-                                  key={`${event.id}-mobile-${eventIdx}`}
-                                  className={cn(
-                                    'mx-0.5 mt-1 h-2 w-2 rounded-full',
-                                    event.tipo === 'vistoria' ? 'bg-primary' : 'bg-muted-foreground'
-                                  )}
-                                  title={
-                                    event.tipo === 'vistoria' && event.processo
-                                      ? `${event.processo.contrato.nomeInquilino} - ${event.time}`
-                                      : `${event.name} - ${event.time}`
-                                  }
+                        .map((date, dateIdx) => {
+                          const vistoriasCount = date.events.filter(
+                            (event) => event.tipo === 'vistoria'
+                          ).length
+                          const outrosEventosCount = date.events.filter(
+                            (event) =>
+                              event.tipo !== 'vistoria' &&
+                              !event.processo &&
+                              !event.name.toLowerCase().includes('vistoria')
+                          ).length
+
+                          return (
+                            <div
+                              key={`${date.day.toString()}-mobile-${dateIdx}`}
+                              className="-mx-0.5 mt-auto flex flex-wrap-reverse gap-0.5"
+                            >
+                              {/* Indicador para vistorias */}
+                              {vistoriasCount > 0 && (
+                                <div
+                                  className="h-2 w-2 rounded-full bg-primary border border-primary-foreground"
+                                  title={`${vistoriasCount} vistoria${vistoriasCount !== 1 ? 's' : ''} agendada${vistoriasCount !== 1 ? 's' : ''}`}
                                 />
-                              )
-                            })}
-                          </div>
-                        ))}
+                              )}
+
+                              {/* Indicadores para outros eventos */}
+                              {date.events
+                                .filter(
+                                  (event) =>
+                                    event.tipo !== 'vistoria' &&
+                                    !event.processo &&
+                                    !event.name.toLowerCase().includes('vistoria')
+                                )
+                                .slice(0, 3)
+                                .map((event, eventIdx) => (
+                                  <span
+                                    key={`${event.id}-mobile-${eventIdx}`}
+                                    className="h-2 w-2 rounded-full bg-muted-foreground"
+                                    title={`${event.name} - ${event.time}`}
+                                  />
+                                ))}
+
+                              {/* Indicador de mais eventos */}
+                              {outrosEventosCount > 3 && (
+                                <span
+                                  className="h-2 w-2 rounded-full bg-muted-foreground/50 border border-muted-foreground"
+                                  title={`+${outrosEventosCount - 3} evento${outrosEventosCount - 3 !== 1 ? 's' : ''}`}
+                                />
+                              )}
+                            </div>
+                          )
+                        })}
                     </div>
                   )}
                 </button>
@@ -386,6 +563,16 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
           </div>
         </div>
       </div>
+
+      {/* Modal para Vistorias do Dia */}
+      {modalOpen && (
+        <VistoriasModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          date={selectedDay}
+          vistorias={selectedDayEvents}
+        />
+      )}
     </div>
   )
 }
