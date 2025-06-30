@@ -1,0 +1,307 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Estilos específicos para layout inteligente */
+@layer components {
+  /* Container de layout principal */
+  .dashboard-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Seções com altura controlada */
+  .dashboard-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Permite flexbox shrink */
+  }
+
+  /* Calendário responsivo */
+  .calendar-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Kanban responsivo */
+  .kanban-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Scroll suave para containers */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  /* Scroll customizado para calendário */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 3px;
+    border: none;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(156, 163, 175, 0.8);
+  }
+
+  /* Previne scroll horizontal indesejado */
+  .no-horizontal-scroll {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+}
+
+/* Utilitários específicos para altura - Expandidos */
+@layer utilities {
+  .h-viewport-minus-header {
+    height: calc(100vh - 140px);
+  }
+
+  .h-half-viewport {
+    height: calc(50vh - 60px);
+  }
+
+  /* Containers flexíveis para componentes grandes */
+  .calendar-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .kanban-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Scrolls suaves otimizados */
+  .calendar-scroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+  }
+
+  .kanban-scroll {
+    overflow-y: auto;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+  }
+
+  /* Classes para componentes grandes */
+  .large-calendar {
+    min-height: 60vh;
+    max-height: 70vh;
+  }
+
+  .large-kanban {
+    min-height: 25vh;
+    max-height: 40vh;
+  }
+
+  /* Melhorias para scrollbars */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--border) / 0.8);
+  }
+
+  .h-calendar-section {
+    height: calc(55vh - 60px);
+    min-height: 450px;
+  }
+
+  .h-kanban-section {
+    height: calc(40vh - 60px);
+    min-height: 400px;
+  }
+
+  /* Mobile adjustments */
+  @screen sm {
+    .h-calendar-section {
+      height: calc(50vh - 50px);
+      min-height: 400px;
+    }
+
+    .h-kanban-section {
+      height: calc(45vh - 50px);
+      min-height: 350px;
+    }
+  }
+
+  /* Tablet adjustments */
+  @screen md {
+    .h-calendar-section {
+      height: calc(52vh - 55px);
+      min-height: 420px;
+    }
+
+    .h-kanban-section {
+      height: calc(43vh - 55px);
+      min-height: 380px;
+    }
+  }
+
+  /* Large screen adjustments */
+  @screen lg {
+    .h-calendar-section {
+      height: calc(55vh - 60px);
+      min-height: 480px;
+    }
+
+    .h-kanban-section {
+      height: calc(40vh - 60px);
+      min-height: 420px;
+    }
+  }
+}
+
+/* Ajustes para componentes específicos */
+@layer components {
+  /* Kanban boards responsivos */
+  .kanban-board {
+    min-height: 200px;
+    max-height: calc(100% - 60px);
+    overflow-y: auto;
+  }
+
+  /* Cards do kanban */
+  .kanban-card {
+    cursor: grab;
+  }
+
+  .kanban-card:active {
+    cursor: grabbing;
+  }
+
+  /* Calendar específico */
+  .calendar-grid {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* Alerts positioning */
+  .alert-container {
+    position: fixed;
+    pointer-events: none;
+    z-index: 90;
+  }
+
+  .alert-container > * {
+    pointer-events: auto;
+  }
+}
