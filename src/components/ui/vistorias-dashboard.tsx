@@ -13,6 +13,7 @@ import {
   TrendingDown,
   TrendingUp,
   XCircle,
+  type LucideIcon,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
@@ -24,7 +25,7 @@ interface DashboardMetric {
   percentage: number
   trend: 'up' | 'down' | 'stable'
   trendValue: number
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
+  icon: LucideIcon
   color: string
   description: string
 }
