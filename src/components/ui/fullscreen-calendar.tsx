@@ -352,6 +352,17 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
                   onClick={() => handleDayClick(day)}
                   className={cn(
                     dayIdx === 0 && colStartClasses[getDay(day) === 0 ? 6 : getDay(day) - 1], // Ajuste para segunda-feira
+                    (() => {
+                      const dayData = data.find((d) => isSameDay(d.day, day))
+                      const vCount = dayData
+                        ? dayData.events.filter((e) => e.tipo === 'vistoria').length
+                        : 0
+                      if (vCount >= 10) return 'bg-primary/70'
+                      if (vCount >= 7) return 'bg-primary/50'
+                      if (vCount >= 4) return 'bg-primary/30'
+                      if (vCount >= 1) return 'bg-primary/10'
+                      return ''
+                    })(),
                     !isEqual(day, selectedDay) &&
                       !isToday(day) &&
                       !isSameMonth(day, firstDayCurrentMonth) &&
@@ -381,86 +392,33 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
                       <time dateTime={format(day, 'yyyy-MM-dd')}>{format(day, 'd')}</time>
                     </button>
                   </header>
-                  <div className="flex-1 p-3 pt-0">
-                    {data
-                      .filter((eventData) => isSameDay(eventData.day, day))
-                      .map((eventData, eventDataIdx) => {
-                        const vistoriasCount = eventData.events.filter(
-                          (event) => event.tipo === 'vistoria'
-                        ).length
-                        const outrosEventosCount = eventData.events.filter(
-                          (event) =>
-                            event.tipo !== 'vistoria' &&
-                            !event.processo &&
-                            !event.name.toLowerCase().includes('vistoria')
-                        ).length
-
-                        return (
-                          <div
-                            key={`${eventData.day.toString()}-${eventDataIdx}`}
-                            className="space-y-2"
-                          >
-                            {/* Indicador de Vistorias */}
-                            {vistoriasCount > 0 && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="w-full justify-between p-2 h-auto text-xs"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleDayClick(day)
-                                }}
-                              >
-                                <div className="flex items-center gap-2">
-                                  <Calendar className="h-3 w-3" />
-                                  <span>
-                                    {vistoriasCount} Vistoria{vistoriasCount !== 1 ? 's' : ''}
-                                  </span>
-                                </div>
-                                <Badge variant="secondary" className="text-xs px-1">
-                                  Ver
-                                </Badge>
-                              </Button>
-                            )}
-
-                            {/* Outros eventos (não vistorias) - exibição limitada */}
-                            {eventData.events
-                              .filter(
-                                (event) =>
-                                  event.tipo !== 'vistoria' &&
-                                  !event.processo &&
-                                  !event.name.toLowerCase().includes('vistoria')
-                              )
-                              .slice(0, 2)
-                              .map((event, eventIdx) => (
-                                <div
-                                  key={`${event.id}-${eventIdx}`}
-                                  className={cn(
-                                    'flex flex-col items-start gap-1 rounded-lg border p-2 text-xs leading-tight shadow-sm hover:shadow-md transition-all cursor-pointer group',
-                                    'bg-card hover:bg-muted/50 border-border'
-                                  )}
-                                  title={event.name}
-                                >
-                                  <p className="font-semibold leading-none truncate w-full">
-                                    {event.name}
-                                  </p>
-                                  <p className="leading-none text-muted-foreground font-medium">
-                                    {event.time}
-                                  </p>
-                                </div>
-                              ))}
-
-                            {/* Indicador de eventos adicionais */}
-                            {outrosEventosCount > 2 && (
-                              <div className="text-xs text-muted-foreground font-medium bg-muted/30 rounded px-2 py-1 text-center">
-                                + {outrosEventosCount - 2} evento
-                                {outrosEventosCount - 2 !== 1 ? 's' : ''}
-                              </div>
-                            )}
+                  {/* Novo bloco de exibição agregada */}
+                  {(() => {
+                    const dayData = data.find((d) => isSameDay(d.day, day))
+                    if (!dayData) return null
+                    const vCount = dayData.events.filter((e) => e.tipo === 'vistoria').length
+                    const oCount = dayData.events.filter(
+                      (e) =>
+                        e.tipo !== 'vistoria' &&
+                        !e.processo &&
+                        !e.name.toLowerCase().includes('vistoria')
+                    ).length
+                    return (
+                      <div className="flex-1 flex flex-col items-center justify-center gap-1 p-2">
+                        {vCount > 0 && (
+                          <div className="flex items-center gap-1 text-primary-foreground font-bold">
+                            <Calendar className="h-3 w-3" />
+                            <span className="text-sm">{vCount}</span>
                           </div>
-                        )
-                      })}
-                  </div>
+                        )}
+                        {oCount > 0 && (
+                          <div className="text-[10px] text-muted-foreground">
+                            +{oCount} outro{oCount !== 1 ? 's' : ''}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })()}
                 </div>
               ))}
             </div>
@@ -473,6 +431,17 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
                   key={dayIdx}
                   type="button"
                   className={cn(
+                    (() => {
+                      const dayData = data.find((d) => isSameDay(d.day, day))
+                      const vCount = dayData
+                        ? dayData.events.filter((e) => e.tipo === 'vistoria').length
+                        : 0
+                      if (vCount >= 10) return 'bg-primary/70 text-primary-foreground'
+                      if (vCount >= 7) return 'bg-primary/50 text-primary-foreground'
+                      if (vCount >= 4) return 'bg-primary/30 text-primary-foreground'
+                      if (vCount >= 1) return 'bg-primary/20 text-primary-foreground'
+                      return ''
+                    })(),
                     isEqual(day, selectedDay) && 'text-primary-foreground',
                     !isEqual(day, selectedDay) &&
                       !isToday(day) &&
@@ -500,63 +469,18 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
                   >
                     {format(day, 'd')}
                   </time>
-                  {data.filter((date) => isSameDay(date.day, day)).length > 0 && (
-                    <div>
-                      {data
-                        .filter((date) => isSameDay(date.day, day))
-                        .map((date, dateIdx) => {
-                          const vistoriasCount = date.events.filter(
-                            (event) => event.tipo === 'vistoria'
-                          ).length
-                          const outrosEventosCount = date.events.filter(
-                            (event) =>
-                              event.tipo !== 'vistoria' &&
-                              !event.processo &&
-                              !event.name.toLowerCase().includes('vistoria')
-                          ).length
-
-                          return (
-                            <div
-                              key={`${date.day.toString()}-mobile-${dateIdx}`}
-                              className="-mx-0.5 mt-auto flex flex-wrap-reverse gap-0.5"
-                            >
-                              {/* Indicador para vistorias */}
-                              {vistoriasCount > 0 && (
-                                <div
-                                  className="h-2 w-2 rounded-full bg-primary border border-primary-foreground"
-                                  title={`${vistoriasCount} vistoria${vistoriasCount !== 1 ? 's' : ''} agendada${vistoriasCount !== 1 ? 's' : ''}`}
-                                />
-                              )}
-
-                              {/* Indicadores para outros eventos */}
-                              {date.events
-                                .filter(
-                                  (event) =>
-                                    event.tipo !== 'vistoria' &&
-                                    !event.processo &&
-                                    !event.name.toLowerCase().includes('vistoria')
-                                )
-                                .slice(0, 3)
-                                .map((event, eventIdx) => (
-                                  <span
-                                    key={`${event.id}-mobile-${eventIdx}`}
-                                    className="h-2 w-2 rounded-full bg-muted-foreground"
-                                    title={`${event.name} - ${event.time}`}
-                                  />
-                                ))}
-
-                              {/* Indicador de mais eventos */}
-                              {outrosEventosCount > 3 && (
-                                <span
-                                  className="h-2 w-2 rounded-full bg-muted-foreground/50 border border-muted-foreground"
-                                  title={`+${outrosEventosCount - 3} evento${outrosEventosCount - 3 !== 1 ? 's' : ''}`}
-                                />
-                              )}
-                            </div>
-                          )
-                        })}
-                    </div>
-                  )}
+                  {/* Indicadores agregados para mobile */}
+                  {(() => {
+                    const dayData = data.find((d) => isSameDay(d.day, day))
+                    if (!dayData) return null
+                    const vCount = dayData.events.filter((e) => e.tipo === 'vistoria').length
+                    if (vCount === 0) return null
+                    return (
+                      <div className="mt-auto text-xs font-bold text-primary-foreground">
+                        {vCount} V
+                      </div>
+                    )
+                  })()}
                 </button>
               ))}
             </div>
