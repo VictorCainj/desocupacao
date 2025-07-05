@@ -158,13 +158,21 @@ const convertToProcessoDesocupacao = (processo: ProcessoCompleto): ProcessoDesoc
   }
 }
 
-// Componente para criar novo processo
-const NovoProcessoDialog: FC<{
+// Props for NovoProcessoDialog
+interface NovoProcessoDialogProps {
   onSave: (processo: ProcessoDesocupacao) => void
   statusList: Status[]
   usersList: User[]
   garantiasList: GarantiaType[]
-}> = ({ onSave, statusList, usersList, garantiasList }) => {
+}
+
+// Componente para criar novo processo
+const NovoProcessoDialog: FC<NovoProcessoDialogProps> = ({
+  onSave,
+  statusList,
+  usersList,
+  garantiasList,
+}) => {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [novoProcesso, setNovoProcesso] = useState<Omit<ProcessoDesocupacao, 'id' | 'status'>>({

@@ -112,7 +112,11 @@ const calculateTrend = (
   return { trend: 'stable', trendValue: 0 }
 }
 
-const MetricCard = ({ metric }: { metric: DashboardMetric }) => {
+interface MetricCardProps {
+  metric: DashboardMetric
+}
+
+const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
   const Icon = metric.icon
 
   return (
