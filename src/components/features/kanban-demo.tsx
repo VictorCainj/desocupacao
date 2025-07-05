@@ -202,10 +202,10 @@ const NovoProcessoDialog: FC<{
     setLoading(true)
     try {
       const garantiaSelecionada = garantiasList.find(
-        (g) => g.name === novoProcesso.contrato.garantia
+        (g: GarantiaType) => g.name === novoProcesso.contrato.garantia
       )
-      const statusInicial = statusList.find((s) => s.name === 'Notificação de Desocupação')
-      const usuarioResponsavel = usersList.find((u) => u.id === novoProcesso.responsavel?.id)
+      const statusInicial = statusList.find((s: Status) => s.name === 'Notificação de Desocupação')
+      const usuarioResponsavel = usersList.find((u: User) => u.id === novoProcesso.responsavel?.id)
 
       if (!garantiaSelecionada || !statusInicial || !usuarioResponsavel) {
         throw new Error('Dados de referência não encontrados')
@@ -294,7 +294,7 @@ const NovoProcessoDialog: FC<{
             <Input
               id="nomeProcesso"
               value={novoProcesso.name}
-              onChange={(e) => setNovoProcesso({ ...novoProcesso, name: e.target.value })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNovoProcesso({ ...novoProcesso, name: e.target.value })}
               className="col-span-3"
               placeholder="ex: Apartamento 101 - Centro"
               required
@@ -307,7 +307,7 @@ const NovoProcessoDialog: FC<{
             <Input
               id="nomeInquilino"
               value={novoProcesso.contrato.nomeInquilino}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setNovoProcesso({
                   ...novoProcesso,
                   contrato: { ...novoProcesso.contrato, nomeInquilino: e.target.value },
@@ -325,7 +325,7 @@ const NovoProcessoDialog: FC<{
             <Input
               id="endereco"
               value={novoProcesso.contrato.endereco}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setNovoProcesso({
                   ...novoProcesso,
                   contrato: { ...novoProcesso.contrato, endereco: e.target.value },
@@ -341,7 +341,7 @@ const NovoProcessoDialog: FC<{
             </Label>
             <select
               value={novoProcesso.contrato.garantia}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 setNovoProcesso({
                   ...novoProcesso,
                   contrato: { ...novoProcesso.contrato, garantia: e.target.value },
@@ -362,8 +362,8 @@ const NovoProcessoDialog: FC<{
             </Label>
             <select
               value={novoProcesso.responsavel?.id || ''}
-              onChange={(e) => {
-                const user = usersList.find((u) => u.id === e.target.value)
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                const user = usersList.find((u: User) => u.id === e.target.value)
                 setNovoProcesso({
                   ...novoProcesso,
                   responsavel: user
@@ -394,7 +394,7 @@ const NovoProcessoDialog: FC<{
               id="dataNotificacao"
               type="date"
               value={formatDateForInput(novoProcesso.contrato.dataNotificacao)}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setNovoProcesso({
                   ...novoProcesso,
                   contrato: {
@@ -414,7 +414,7 @@ const NovoProcessoDialog: FC<{
               id="dataFinalDesocupacao"
               type="date"
               value={formatDateForInput(novoProcesso.contrato.dataFinalDesocupacao)}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setNovoProcesso({
                   ...novoProcesso,
                   contrato: {
@@ -434,7 +434,7 @@ const NovoProcessoDialog: FC<{
               id="dataVistoria"
               type="date"
               value={formatDateForInput(novoProcesso.contrato.dataVistoria)}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setNovoProcesso({
                   ...novoProcesso,
                   contrato: {
@@ -454,7 +454,7 @@ const NovoProcessoDialog: FC<{
               id="horarioVistoria"
               type="time"
               value={novoProcesso.contrato.horarioVistoria}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setNovoProcesso({
                   ...novoProcesso,
                   contrato: { ...novoProcesso.contrato, horarioVistoria: e.target.value },
@@ -529,7 +529,7 @@ const EditarContratoDialog: FC<{
             <Input
               id="editNomeProcesso"
               value={editedProcesso.name}
-              onChange={(e) => setEditedProcesso({ ...editedProcesso, name: e.target.value })}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditedProcesso({ ...editedProcesso, name: e.target.value })}
               className="col-span-3"
               placeholder="ex: Apartamento 101 - Centro"
             />
@@ -541,7 +541,7 @@ const EditarContratoDialog: FC<{
             <Input
               id="editNomeInquilino"
               value={editedProcesso.contrato.nomeInquilino}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setEditedProcesso({
                   ...editedProcesso,
                   contrato: { ...editedProcesso.contrato, nomeInquilino: e.target.value },
@@ -558,7 +558,7 @@ const EditarContratoDialog: FC<{
             <Input
               id="editEndereco"
               value={editedProcesso.contrato.endereco}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setEditedProcesso({
                   ...editedProcesso,
                   contrato: { ...editedProcesso.contrato, endereco: e.target.value },
@@ -574,7 +574,7 @@ const EditarContratoDialog: FC<{
             </Label>
             <select
               value={editedProcesso.contrato.garantia}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 setEditedProcesso({
                   ...editedProcesso,
                   contrato: { ...editedProcesso.contrato, garantia: e.target.value },
@@ -597,7 +597,7 @@ const EditarContratoDialog: FC<{
               id="editDataNotificacao"
               type="date"
               value={formatDateForInput(editedProcesso.contrato.dataNotificacao)}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setEditedProcesso({
                   ...editedProcesso,
                   contrato: {
@@ -617,7 +617,7 @@ const EditarContratoDialog: FC<{
               id="editDataFinalDesocupacao"
               type="date"
               value={formatDateForInput(editedProcesso.contrato.dataFinalDesocupacao)}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setEditedProcesso({
                   ...editedProcesso,
                   contrato: {
@@ -637,7 +637,7 @@ const EditarContratoDialog: FC<{
               id="editDataVistoria"
               type="date"
               value={formatDateForInput(editedProcesso.contrato.dataVistoria)}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setEditedProcesso({
                   ...editedProcesso,
                   contrato: {
@@ -656,7 +656,7 @@ const EditarContratoDialog: FC<{
             <Input
               id="editHorarioVistoria"
               value={editedProcesso.contrato.horarioVistoria}
-              onChange={(e) =>
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setEditedProcesso({
                   ...editedProcesso,
                   contrato: { ...editedProcesso.contrato, horarioVistoria: e.target.value },
@@ -918,10 +918,10 @@ const FiltrosBusca: FC<{
   }
 
   const handleGarantiaChange = (garantiaName: string, checked: boolean) => {
-    const novasGarantias = checked
+    const novosGarantias = checked
       ? [...filtros.garantias, garantiaName]
-      : filtros.garantias.filter((g) => g !== garantiaName)
-    onFiltrosChange({ ...filtros, garantias: novasGarantias })
+      : filtros.garantias.filter((g: string) => g !== garantiaName)
+    onFiltrosChange({ ...filtros, garantias: novosGarantias })
   }
 
   const handleResponsavelChange = (responsavelId: string, checked: boolean) => {
@@ -957,7 +957,7 @@ const FiltrosBusca: FC<{
           <Input
             placeholder="Buscar por nome, inquilino, endereço ou processo judicial..."
             value={filtros.busca}
-            onChange={(e) => handleBuscaChange(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleBuscaChange(e.target.value)}
             className="pl-10 pr-4"
           />
         </div>
@@ -1008,7 +1008,7 @@ const FiltrosBusca: FC<{
                   <input
                     type="checkbox"
                     checked={filtros.status.includes(status.name)}
-                    onChange={(e) => handleStatusChange(status.name, e.target.checked)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleStatusChange(status.name, e.target.checked)}
                     className="rounded"
                   />
                   <div className="flex items-center gap-2">
@@ -1027,12 +1027,12 @@ const FiltrosBusca: FC<{
           <div>
             <h4 className="font-medium mb-3 text-sm">Tipo de Garantia</h4>
             <div className="space-y-2">
-              {garantiasList.map((garantia) => (
+              {garantiasList.map((garantia: GarantiaType) => (
                 <label key={garantia.id} className="flex items-center gap-2 text-sm cursor-pointer">
                   <input
                     type="checkbox"
                     checked={filtros.garantias.includes(garantia.name)}
-                    onChange={(e) => handleGarantiaChange(garantia.name, e.target.checked)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleGarantiaChange(garantia.name, e.target.checked)}
                     className="rounded"
                   />
                   <span>{garantia.name}</span>
@@ -1050,7 +1050,7 @@ const FiltrosBusca: FC<{
                   <input
                     type="checkbox"
                     checked={filtros.responsaveis.includes(user.id)}
-                    onChange={(e) => handleResponsavelChange(user.id, e.target.checked)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleResponsavelChange(user.id, e.target.checked)}
                     className="rounded"
                   />
                   <span>{user.name}</span>
@@ -1206,12 +1206,12 @@ const KanbanExample: FC<{
 
   const handleSaveProcesso = async (updatedProcesso: ProcessoDesocupacao) => {
     try {
-      const garantiaSelecionada = garantiasList.find(
-        (g) => g.name === updatedProcesso.contrato.garantia
+      const garantia = garantiasList.find((g: GarantiaType) =>
+        g.name === updatedProcesso.contrato.garantia
       )
-      const responsavel = usersList.find((u) => u.id === updatedProcesso.responsavel?.id)
+      const responsavel = usersList.find((u: User) => u.id === updatedProcesso.responsavel?.id)
 
-      if (!garantiaSelecionada) {
+      if (!garantia) {
         throw new Error('Tipo de garantia não encontrado')
       }
 
@@ -1220,7 +1220,7 @@ const KanbanExample: FC<{
         name: updatedProcesso.name,
         nome_inquilino: updatedProcesso.contrato.nomeInquilino,
         endereco: updatedProcesso.contrato.endereco,
-        garantia_type_id: garantiaSelecionada.id,
+        garantia_type_id: garantia.id,
         responsavel_id: responsavel?.id,
         updated_by_id: usersList[0]?.id || responsavel?.id || '1',
         data_notificacao: format(updatedProcesso.contrato.dataNotificacao, 'yyyy-MM-dd'),
