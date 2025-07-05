@@ -511,7 +511,7 @@ const EditarContratoDialog: FC<{
           variant="ghost"
           size="icon"
           className="h-6 w-6 relative z-20"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
         >
           <Edit3 className="h-4 w-4" />
         </Button>
@@ -777,7 +777,7 @@ const VisualizarDetalhesDialog: FC<{
           variant="ghost"
           size="icon"
           className="h-6 w-6 relative z-20"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
         >
           <Eye className="h-4 w-4" />
         </Button>

@@ -80,14 +80,14 @@ interface FullScreenCalendarProps {
 }
 
 // Componente Modal para Vistorias do Dia
-interface VistoriasModalProps {
+export interface VistoriasModalProps {
   isOpen: boolean
   onClose: () => void
   date: Date
   vistorias: Event[]
 }
 
-const VistoriasModal: React.FC<VistoriasModalProps> = ({ isOpen, onClose, date, vistorias }) => {
+function VistoriasModal({ isOpen, onClose, date, vistorias }: VistoriasModalProps): JSX.Element {
   const vistoriasDoTipo = vistorias.filter((event) => event.tipo === 'vistoria')
 
   return (
@@ -215,7 +215,7 @@ const colStartClasses = [
 // Dias da semana em português brasileiro - começando na segunda-feira
 const weekDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
 
-export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
+export function FullScreenCalendar({ data }: FullScreenCalendarProps): JSX.Element {
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = React.useState(today)
   const [currentMonth, setCurrentMonth] = React.useState(
@@ -346,7 +346,7 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
           <div className="min-h-full text-sm md:text-base leading-6">
             {/* Desktop Calendar Grid */}
             <div className="hidden w-full border-x lg:grid lg:grid-cols-7 auto-rows-fr min-h-[600px]">
-              {days.map((day, dayIdx) => (
+              {days.map((day: Date, dayIdx: number) => (
                 <div
                   key={dayIdx}
                   onClick={() => handleDayClick(day)}
@@ -425,7 +425,7 @@ export function FullScreenCalendar({ data }: FullScreenCalendarProps) {
 
             {/* Mobile Calendar Grid */}
             <div className="isolate grid w-full grid-cols-7 auto-rows-fr lg:hidden min-h-[500px]">
-              {days.map((day, dayIdx) => (
+              {days.map((day: Date, dayIdx: number) => (
                 <button
                   onClick={() => handleDayClick(day)}
                   key={dayIdx}
