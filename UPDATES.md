@@ -120,6 +120,7 @@ npm run upgrade      # Atualizar dependências
 - ✅ **Filtros em camadas** - Múltiplos níveis de filtragem para garantia
 
 **Funcionalidades:**
+
 - Indicadores por tipo: Vistorias (azul) vs Outros eventos (cinza)
 - Modal detalhado com informações completas das vistorias
 - Cards individuais para cada vistoria do dia
